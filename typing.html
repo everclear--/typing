@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script>
+const questtext = 
+`A pangram is a sentence using every letter of the alphabet at least once.
+"The quick brown fox jumps over the lazy dog." is the most famous English pangram.`;
+
+</script>
+
+<style>
+.unpressed {
+    color: #CCCCCC;
+}
+
+.hit {
+
+    color: black;
+}
+
+.miss {
+    color: red;
+    background-color: #CCCCCC;
+}
+
+.current {
+    color: green;
+    text-decoration: underline;
+    font-weight: bold;
+}
+</style>
+<script>
+function getCharElem(column, row) {
+    return document.getElementById("char_"+row+"_"+column);
+}
+
+function keydown() {
+    const keyCode = event.keyCode;
+    // backspace
+    if (event.keyCode == 8) {
+        getCharElem(x, y).className="unpressed";
+        x = (x>0)?x-1:0;
+
+        if (missmode 
+                && ((x == 0) || getCharElem(x - 1, y).className == "hit")) 
+            missmode = false;
+
+        updateCursor();
+        event.preventDefault();
+        return;
+    }
+}
+
+function keypress() {
+    if (start == 0) start = new Date().getTime();
+    const c = event.which || event.keyCode;
+    if (c == 13 && !missmode && x == quest[y].length) {
+        document.getElementById("char_"+y+"_"+x).className="hit";
+        x = 0;
+        y++;
+        updateCursor();
+        if (y == quest.length) result();
+        return;
+    }
+
+    if (!missmode && c != quest[y].charCodeAt(x)) missmode = true;
+    document.getElementById("char_"+y+"_"+x).className= missmode? "miss":"hit";
+    x++;
+    if (x > quest[y].length) x =  quest[y].length + 1;
+    updateCursor();
+}
+
+function updateCursor() {
+    const curr = getCharElem(x, y);
+    if (curr)
+        curr.className = "current";
+}
+
+function result() {
+    const elapsed = (new Date().getTime() - start)/1000/60;
+    const speed = Math.round(total/elapsed);
+    const area = document.getElementById("area");
+    area.innerHTML = 
+        "<a onclick='location.reload()'>수고하셨습니다. " 
+        + speed + "타입니다. 여기를 눌러 다시 한번 시도해 보세요.</a>";
+}
+
+</script>
+</head>
+<body onkeydown="keydown()" onkeypress="keypress()">
+    <div id="area" />
+    <div id="speed" />
+
+    <script>
+const quest = questtext.split("\n");
+let start = 0;
+let missmode = false;
+let total = 0;
+
+const area = document.getElementById("area");
+for (let i = 0; i < quest.length; ++i) {
+    const l = document.createElement("P");
+    const lt = quest[i] + "⏎ ";
+    for (let j = 0; j < lt.length; ++j) {
+        const c = document.createElement("SPAN");
+        c.id = "char_"+i+"_"+j;
+        c.className = "unpressed";
+        c.innerText = lt.charAt(j);
+        l.appendChild(c);
+        total++;
+    }
+    area.appendChild(l);
+}
+
+// cursor
+let x = 0;
+let y = 0;
+updateCursor();
+    </script>
+
+</body>
+</html>
+
+
