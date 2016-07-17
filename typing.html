@@ -3,9 +3,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <script>
-const questtext = 
-`A pangram is a sentence using every letter of the alphabet at least once.
-"The quick brown fox jumps over the lazy dog." is the most famous English pangram.`;
+var questtext = 
+'A pangram is a sentence using every letter of the alphabet at least once.\n\
+"The quick brown fox jumps over the lazy dog." is the most famous English pangram.';
 
 </script>
 
@@ -15,7 +15,6 @@ const questtext =
 }
 
 .hit {
-
     color: black;
 }
 
@@ -29,6 +28,12 @@ const questtext =
     text-decoration: underline;
     font-weight: bold;
 }
+
+.misscurrent {
+    color: red;
+    background-color: #CCCCCC;
+    font-weight: bold;
+}
 </style>
 <script>
 function getCharElem(column, row) {
@@ -36,9 +41,9 @@ function getCharElem(column, row) {
 }
 
 function keydown() {
-    const keyCode = event.keyCode;
+    var c = event.which || event.keyCode;
     // backspace
-    if (event.keyCode == 8) {
+    if (c == 8) {
         getCharElem(x, y).className="unpressed";
         x = (x>0)?x-1:0;
 
@@ -47,14 +52,13 @@ function keydown() {
             missmode = false;
 
         updateCursor();
-        event.preventDefault();
-        return;
+        return false;
     }
 }
 
 function keypress() {
     if (start == 0) start = new Date().getTime();
-    const c = event.which || event.keyCode;
+    var c = event.which || event.keyCode;
     if (c == 13 && !missmode && x == quest[y].length) {
         document.getElementById("char_"+y+"_"+x).className="hit";
         x = 0;
@@ -72,15 +76,15 @@ function keypress() {
 }
 
 function updateCursor() {
-    const curr = getCharElem(x, y);
+    var curr = getCharElem(x, y);
     if (curr)
-        curr.className = "current";
+        curr.className = missmode?"misscurrent": "current";
 }
 
 function result() {
-    const elapsed = (new Date().getTime() - start)/1000/60;
-    const speed = Math.round(total/elapsed);
-    const area = document.getElementById("area");
+    var elapsed = (new Date().getTime() - start)/1000/60;
+    var speed = Math.round(total/elapsed);
+    var area = document.getElementById("area");
     area.innerHTML = 
         "<a onclick='location.reload()'>수고하셨습니다. " 
         + speed + "타입니다. 여기를 눌러 다시 한번 시도해 보세요.</a>";
@@ -88,22 +92,21 @@ function result() {
 
 </script>
 </head>
-<body onkeydown="keydown()" onkeypress="keypress()">
-    <div id="area" />
-    <div id="speed" />
+<body onkeydown="return keydown()" onkeypress="keypress()">
+<div id="area"></div>
 
     <script>
-const quest = questtext.split("\n");
-let start = 0;
-let missmode = false;
-let total = 0;
+var quest = questtext.split("\n");
+var start = 0;
+var missmode = false;
+var total = 0;
 
-const area = document.getElementById("area");
-for (let i = 0; i < quest.length; ++i) {
-    const l = document.createElement("P");
-    const lt = quest[i] + "⏎ ";
-    for (let j = 0; j < lt.length; ++j) {
-        const c = document.createElement("SPAN");
+var area = document.getElementById("area");
+for (var i = 0; i < quest.length; ++i) {
+    var l = document.createElement("P");
+    var lt = quest[i] + "⏎ ";
+    for (var j = 0; j < lt.length; ++j) {
+        var c = document.createElement("SPAN");
         c.id = "char_"+i+"_"+j;
         c.className = "unpressed";
         c.innerText = lt.charAt(j);
@@ -114,8 +117,8 @@ for (let i = 0; i < quest.length; ++i) {
 }
 
 // cursor
-let x = 0;
-let y = 0;
+var x = 0;
+var y = 0;
 updateCursor();
     </script>
 
