@@ -10,6 +10,10 @@ var questtext =
 </script>
 
 <style>
+body {
+    font-size: 200%;
+}
+
 .unpressed {
     color: #CCCCCC;
 }
@@ -29,11 +33,25 @@ var questtext =
     font-weight: bold;
 }
 
+.current_alter {
+    color: green;
+    font-weight: bold;
+}
+
 .misscurrent {
     color: red;
     background-color: #CCCCCC;
     font-weight: bold;
 }
+
+.misscurrent_alter {
+    color: red;
+    background-color: #CCCCCC;
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+
 </style>
 <script>
 function getCharElem(column, row) {
@@ -120,9 +138,16 @@ for (var i = 0; i < quest.length; ++i) {
 var x = 0;
 var y = 0;
 updateCursor();
+
+// blinking
+setInterval(function () {
+    var curr = getCharElem(x, y);
+    if (curr) {
+        curr.className = (curr.className.endsWith("_alter"))?curr.className.split("_")[0]: curr.className + "_alter";
+    }
+}, 500);
+;
     </script>
 
 </body>
 </html>
-
-
